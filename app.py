@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from gtts import gTTS
+from gTTS import gTTS
 import speech_recognition as sr
 import streamlit as st
 
