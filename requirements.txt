@@ -1,7 +1,6 @@
-﻿fastapi
-uvicorn
-flask
-flask-cors
+streamlit
 pandas
-python-dotenv
+gTTS
+speechrecognition
 anthropic
+python-dotenv
