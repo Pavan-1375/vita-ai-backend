@@ -129,14 +129,16 @@ def _handle_chat_message(
     st.session_state.last_chat_reply_audio = _tts_audio_bytes(reply)
 
 
-# ── API key check ──────────────────────────────────────────────────────────────
-if not os.environ.get("ANTHROPIC_API_KEY"):
-    st.error(
-        "ANTHROPIC_API_KEY not found. "
-        "Create a .env file in this folder with: ANTHROPIC_API_KEY=sk-ant-your-key-here"
-    )
-    st.stop()
+# ── API key check (temporary bypass for demo) ─────────────────────────────────
+# if not os.environ.get("ANTHROPIC_API_KEY"):
+#     st.error("ANTHROPIC_API_KEY not found...")
+#     st.stop()
 
+# For Streamlit Cloud, we'll make chat optional
+if os.environ.get("ANTHROPIC_API_KEY"):
+    st.success("✅ Claude AI chat enabled")
+else:
+    st.info("💡 AI Chat is disabled (no API key). Core symptom analysis still works fully.")
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(page_title="Symptom Checker", page_icon="🩺", layout="centered")
 
