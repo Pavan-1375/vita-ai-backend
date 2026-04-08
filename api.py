@@ -181,10 +181,20 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
                 "Top Predictions": result.get("Top Predictions", []),
             }
 
-    confidence = float(result.get("Confidence", 0) or 0)
+        confidence = float(result.get("Confidence", 0) or 0)
     disease = str(result.get("Predicted Disease", "")).strip().lower()
-    if confidence < 35 or not disease or disease == "unknown":
+    
+    # If no disease was found at all, use fallback
+    if not disease or disease == "unknown":
         return _build_low_signal_fallback(signals)
+
+    # If confidence is low BUT we found a real disease, keep the real disease 
+    # and its precautions! Just force Triage to "low" for safety.
+    if confidence < 35:
+        result["Confidence"] = max(confidence, 30) # Clean up the number slightly
+        result["Triage"] = "low"
+        result["Input Symptoms"] = signals
+        return result
 
     result["Input Symptoms"] = signals
     return result
