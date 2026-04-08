@@ -1,55 +1,27 @@
-# Symptom Checker (Frontend)
+# YouOkay — AI-Powered Symptom Checker & Wellness Guide
 
-## Setup
+**Instant symptom analysis with safe triage and contextual AI guidance.**
 
-From this folder:
+### Live Demo
+→ [https://vita-ai-puce.vercel.app](https://vita-ai-puce.vercel.app)
 
-```powershell
-python -m pip install -r requirements.txt
-```
+### Key Features
+- Symptom input → Top-3 disease predictions with confidence
+- Urgency triage: Low / Medium / High
+- Two-layer safety system (red flags + emergency warnings)
+- Voice input & voice output support
+- Contextual AI chat for follow-up questions
+- Safety precautions and home remedies
+- Wellness tracker (hydration, breathing, mood)
 
-## Run (web UI)
+### Tech Stack (Frontend)
+- React + TypeScript + Vite
+- Tailwind CSS + Framer Motion
+- Deployed on Vercel
 
-```powershell
-streamlit run app.py
-```
+### Backend
+Connected to: https://github.com/Pavan-1375/vita-ai-backend (Python + Streamlit core + API endpoints)
 
-## New Hackathon Features
+**Disclaimer**: This is an educational prototype and **not a substitute for professional medical advice**. Always consult a doctor.
 
-- Top-3 weighted predictions (not only one best match)
-- Triage label (`LOW`, `MEDIUM`, `HIGH`) + emergency red-flag detection
-- Voice input (microphone) to text
-- Voice output (text-to-speech) for result summary
-- In-app chat assistant for follow-up guidance
-- Safety filter toggle for advice quality
-- Downloadable visit report (`.txt`)
-
-## Notes
-
-- Voice input uses Google's speech recognition backend (internet needed).
-- Voice output uses gTTS (internet needed).
-- This is not a medical diagnosis tool. Always consult a licensed professional.
-
-## 60-Second Demo Script
-
-1. Open app and show "Safety filter: ON".
-2. Enter mild symptoms: `cough, runny nose` and click **Check**.
-3. Show top-3 predictions + precautions + home remedies.
-4. Click **Download Report (TXT)** to show export.
-5. Enter emergency symptom: `chest pain`.
-6. Show emergency warning and urgent actions.
-
-## Run (CLI)
-
-Interactive:
-
-```powershell
-python symptom.py
-```
-
-Non-interactive (pass symptoms):
-
-```powershell
-python symptom.py "fever, cough, headache"
-```
-
+Made with ❤️ for better health decisions in India.
