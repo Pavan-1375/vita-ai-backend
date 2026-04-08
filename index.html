@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VitalAI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <div class="logo">VitalAI</div>
+  <div class="status">AI Active</div>
+</header>
+
+<div class="app">
+
+  <!-- LEFT -->
+  <aside class="sidebar">
+
+    <h3>Log & Predict Symptom</h3>
+
+    <input id="symptom" placeholder="e.g fever, cough">
+    
+    <select id="duration">
+      <option>Just started</option>
+      <option>1-2 days</option>
+      <option>3-5 days</option>
+    </select>
+
+    <select id="severity">
+      <option>Mild</option>
+      <option>Moderate</option>
+      <option>Severe</option>
+    </select>
+
+    <button onclick="logSymptom()">Analyze & Log</button>
+
+    <h4>Symptom History</h4>
+    <div id="history"></div>
+
+  </aside>
+
+  <!-- CHAT -->
+  <main class="chat">
+
+    <h2>Health Consultation</h2>
+
+    <div id="messages" class="messages"></div>
+
+    <div class="input-box">
+      <input id="chatInput" placeholder="Ask something...">
+      <button onclick="startVoice()">🎤</button>
+      <button onclick="sendMessage()">➤</button>
+    </div>
+
+  </main>
+
+  <!-- RIGHT -->
+  <aside class="right">
+
+    <div class="card">
+      <h3>Health Score</h3>
+      <h1 id="score">74</h1>
+    </div>
+
+    <div class="card">
+      <h3>Risk Factors</h3>
+      <ul id="risk"></ul>
+    </div>
+
+    <div class="card">
+      <h3>Preventive Actions</h3>
+      <ul id="precautions"></ul>
+    </div>
+
+    <div class="card">
+      <h3>Alerts</h3>
+      <div id="alerts"></div>
+    </div>
+
+  </aside>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

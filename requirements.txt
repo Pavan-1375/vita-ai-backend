@@ -1,0 +1,7 @@
+﻿fastapi
+uvicorn
+flask
+flask-cors
+pandas
+python-dotenv
+anthropic

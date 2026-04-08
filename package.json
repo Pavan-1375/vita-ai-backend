@@ -1,0 +1,13 @@
+{
+  "name": "hackathon-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix vita-ai run dev",
+    "dev:all": "npm --prefix vita-ai run dev:all",
+    "dev:start": "npm --prefix vita-ai run dev:start",
+    "dev:stop": "npm --prefix vita-ai run dev:stop",
+    "build": "npm --prefix vita-ai run build",
+    "preview": "npm --prefix vita-ai run preview",
+    "lint": "npm --prefix vita-ai run lint"
+  }
+}

@@ -1,0 +1,105 @@
+Disease,Precaution_1,Precaution_2,Precaution_3,Precaution_4
+Drug Reaction,stop irritation,consult nearest hospital,stop taking drug,follow up
+Malaria,Consult nearest hospital,avoid oily food,avoid non veg food,keep mosquitos out
+Allergy,apply calamine,cover area with bandage,,use ice to compress itching
+Hypothyroidism,reduce stress,exercise,eat healthy,get proper sleep
+Psoriasis,wash hands with warm soapy water,stop bleeding using pressure,consult doctor,salt baths
+GERD,avoid fatty spicy food,avoid lying down after eating,maintain healthy weight,exercise
+Chronic cholestasis,cold baths,anti itch medicine,consult doctor,eat healthy
+hepatitis A,Consult nearest hospital,wash hands through,avoid fatty spicy food,medication
+Osteoarthristis,acetaminophen,consult nearest hospital,follow up,salt baths
+(vertigo) Paroymsal  Positional Vertigo,lie down,avoid sudden change in body,avoid abrupt head movment,relax
+Hypoglycemia,lie down on side,check in pulse,drink sugary drinks,consult doctor
+Acne,bath twice,avoid fatty spicy food,drink plenty of water,avoid too many products
+Diabetes ,have balanced diet,exercise,consult doctor,follow up
+Impetigo,soak affected area in warm water,use antibiotics,remove scabs with wet compressed cloth,consult doctor
+Hypertension ,meditation,salt baths,reduce stress,get proper sleep
+Peptic ulcer diseae,avoid fatty spicy food,consume probiotic food,eliminate milk,limit alcohol
+Dimorphic hemmorhoids(piles),avoid fatty spicy food,consume witch hazel,warm bath with epsom salt,consume alovera juice
+Common Cold,drink vitamin c rich drinks,take vapour,avoid cold food,keep fever in check
+Chicken pox,use neem in bathing ,consume neem leaves,take vaccine,avoid public places
+Cervical spondylosis,use heating pad or cold pack,exercise,take otc pain reliver,consult doctor
+Hyperthyroidism,eat healthy,massage,use lemon balm,take radioactive iodine treatment
+Urinary tract infection,drink plenty of water,increase vitamin c intake,drink cranberry juice,take probiotics
+Varicose veins,lie down flat and raise the leg high,use oinments,use vein compression,dont stand still for long
+AIDS,avoid open cuts,wear ppe if possible,consult doctor,follow up
+Paralysis (brain hemorrhage),massage,eat healthy,exercise,consult doctor
+Typhoid,eat high calorie vegitables,antiboitic therapy,consult doctor,medication
+Hepatitis B,consult nearest hospital,vaccination,eat healthy,medication
+Fungal infection,bath twice,use detol or neem in bathing water,keep infected area dry,use clean cloths
+Hepatitis C,Consult nearest hospital,vaccination,eat healthy,medication
+Migraine,meditation,reduce stress,use poloroid glasses in sun,consult doctor
+Bronchial Asthma,switch to loose cloothing,take deep breaths,get away from trigger,seek help
+Alcoholic hepatitis,stop alcohol consumption,consult doctor,medication,follow up
+Jaundice,drink plenty of water,consume milk thistle,eat fruits and high fiberous food,medication
+Hepatitis E,stop alcohol consumption,rest,consult doctor,medication
+Dengue,drink papaya leaf juice,avoid fatty spicy food,keep mosquitos away,keep hydrated
+Hepatitis D,consult doctor,medication,eat healthy,follow up
+Heart attack,call ambulance,chew or swallow asprin,keep calm,
+Pneumonia,consult doctor,medication,rest,follow up
+Arthritis,exercise,use hot and cold therapy,try acupuncture,massage
+Gastroenteritis,stop eating solid food for while,try taking small sips of water,rest,ease back into eating
+Tuberculosis,cover mouth,consult doctor,medication,rest
+COVID-19,isolate at home,wear a mask,stay hydrated and rest,seek medical care if breathing worsens
+Sinusitis,steam inhalation,drink warm fluids,saline nasal rinse,consult doctor if persistent
+Anemia,eat iron-rich foods,take prescribed supplements,monitor hemoglobin,consult physician regularly
+Otitis Media,keep ear dry,use prescribed medication,rest adequately,follow up with doctor
+Conjunctivitis,avoid touching eyes,maintain hand hygiene,do not share towels,use prescribed eye drops
+Influenza,rest well,drink plenty of fluids,isolate if contagious,consult doctor if severe
+Acute Bronchitis,avoid smoke exposure,stay hydrated,rest adequately,use prescribed medicines
+Chronic Bronchitis,stop smoking,avoid air pollutants,pulmonary rehabilitation,follow medical treatment
+Viral Fever,rest,hydration,monitor temperature,consult doctor if persistent
+Bacterial Pneumonia,seek medical care,take antibiotics as prescribed,rest,drink fluids
+Viral Pneumonia,rest,stay hydrated,monitor oxygen symptoms,consult doctor
+Acute Sinus Infection,steam inhalation,saline rinse,rest,medical consultation if prolonged
+Tonsillitis,warm fluids,salt water gargle,rest voice,consult doctor if worsening
+Pharyngitis,drink warm liquids,rest,avoid irritants,seek medical advice if severe
+Laryngitis,voice rest,hydrate,avoid smoking,use humidified air
+Gastritis,avoid spicy food,eat small meals,limit alcohol,consult physician
+Food Poisoning,oral rehydration,rest,eat bland food,seek care if dehydration
+Irritable Bowel Syndrome,manage stress,high-fiber diet,avoid trigger foods,follow doctor plan
+Ulcerative Colitis,take prescribed meds,balanced diet,regular follow-up,monitor flare triggers
+Crohn's Disease,regular specialist follow-up,avoid trigger foods,medication adherence,hydration
+Appendicitis,seek emergency care,avoid self-medication,avoid food before assessment,urgent surgery consult
+Kidney Stone,increase water intake,pain control as prescribed,medical imaging,urology follow-up
+Chronic Kidney Disease,control blood pressure,dietary management,regular kidney tests,nephrologist follow-up
+Acute Kidney Injury,urgent medical evaluation,monitor fluid intake,avoid nephrotoxic drugs,hospital care if severe
+Urinary Calculi,drink plenty of water,medical treatment,diet modification,follow-up imaging
+Pyelonephritis,complete antibiotics,hydration,rest,seek urgent care if severe
+Cystitis,increase water intake,maintain hygiene,avoid bladder irritants,consult doctor
+Hypertensive Crisis,seek emergency care,do not skip medication,monitor blood pressure,hospital evaluation
+Hypotension,drink fluids,rise slowly,eat small frequent meals,consult doctor
+Coronary Artery Disease,seek cardiology care,healthy diet,exercise as advised,avoid smoking
+Heart Failure,limit salt,take medications,daily weight monitoring,regular cardiology follow-up
+Arrhythmia,avoid caffeine excess,monitor pulse,cardiology assessment,medication adherence
+Asthma Exacerbation,use rescue inhaler,avoid triggers,seek urgent care if severe,follow action plan
+COPD,stop smoking,pulmonary rehab,vaccinations,medication compliance
+Tuberculous Lymphadenitis,complete anti-tb therapy,regular follow-up,nutritious diet,prevent spread
+Migraine with Aura,avoid known triggers,rest in dark room,hydrate,take prescribed medication
+Tension Headache,stress management,adequate sleep,hydration,posture correction
+Cluster Headache,seek neurology care,avoid alcohol triggers,oxygen therapy if prescribed,follow treatment
+Epilepsy,medication adherence,avoid sleep deprivation,avoid driving until cleared,neurology follow-up
+Stroke,call emergency services immediately,do not delay treatment,hospital stroke unit care,rehabilitation follow-up
+Transient Ischemic Attack,urgent hospital evaluation,stroke risk control,take prescribed medicines,regular follow-up
+Anxiety Disorder,breathing exercises,limit caffeine,counseling support,professional mental health care
+Depressive Disorder,seek mental health support,maintain routine,social support,professional therapy
+Panic Disorder,slow breathing exercises,seek mental health care,avoid stimulants,follow treatment plan
+Generalized Anxiety Disorder,stress reduction,cognitive therapy,regular exercise,professional follow-up
+Hypokalemia,electrolyte correction,medical evaluation,balanced diet,monitor labs
+Hyperkalemia,urgent medical care,monitor potassium,adjust medications,dietary guidance
+Dehydration,oral rehydration,increase fluids,avoid heat exposure,seek care if severe
+Heat Exhaustion,move to cool place,hydrate,rest,seek care if not improving
+Heat Stroke,call emergency services,rapid cooling,hospital treatment,do not delay care
+Hypothermia,warm gradually,remove wet clothing,seek emergency care,monitor vitals
+Dyslipidemia,low-fat diet,regular exercise,weight control,lipid monitoring
+Obesity,calorie-controlled diet,regular physical activity,behavioral counseling,medical follow-up
+Sleep Apnea,weight management,sleep study evaluation,use CPAP if prescribed,avoid alcohol at night
+Allergic Rhinitis,avoid allergens,use antihistamines,nasal saline rinse,consult doctor
+Atopic Dermatitis,moisturize skin,avoid irritants,use prescribed creams,maintain skin hygiene
+Cellulitis,antibiotics as prescribed,keep area clean,elevate affected part,seek urgent care if spreading
+Scabies,apply prescribed lotion,wash bedding and clothes,treat close contacts,avoid scratching
+Ringworm,keep skin dry,use antifungal cream,avoid sharing personal items,maintain hygiene
+Tinea Versicolor,use antifungal treatment,keep skin dry,avoid oily products,follow dermatologist advice
+Oral Candidiasis,maintain oral hygiene,use antifungal medication,limit sugary foods,consult doctor
+Conjunctival Allergy,avoid allergens,cold compress,lubricating drops,consult ophthalmologist if persistent
+Otitis Externa,keep ear dry,avoid inserting objects,use prescribed ear drops,follow-up with doctor

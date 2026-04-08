@@ -1,0 +1,189 @@
+/* ===== ROOT COLORS (exact match style) ===== */
+:root {
+  --bg: #f5f2ec;
+  --card: #fffef9;
+  --card-soft: #f9f7f1;
+  --text: #1a1915;
+  --text2: #5a5850;
+  --accent: #2d6a4f;
+  --accent-light: #d8f3dc;
+  --warn: #b5451b;
+  --warn-light: #fdebd4;
+  --info-light: #d4e8f5;
+  --border: rgba(0,0,0,0.08);
+}
+
+/* ===== BASE ===== */
+body {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ===== HEADER ===== */
+header {
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-size: 22px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ===== LAYOUT ===== */
+.app {
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+  height: calc(100vh - 64px);
+}
+
+/* ===== LEFT PANEL ===== */
+.sidebar {
+  background: var(--card);
+  padding: 20px;
+  border-right: 1px solid var(--border);
+}
+
+.sidebar h3 {
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--text2);
+}
+
+.sidebar input,
+.sidebar select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card-soft);
+}
+
+/* BUTTON */
+.sidebar button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+}
+
+/* HISTORY */
+#history div {
+  background: var(--card-soft);
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 6px;
+}
+
+/* ===== CHAT ===== */
+.chat {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.msg {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.msg.user {
+  justify-content: flex-end;
+}
+
+.bubble {
+  background: var(--card);
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+.msg.user .bubble {
+  background: var(--accent);
+  color: white;
+  border: none;
+}
+
+/* INPUT */
+.input-box {
+  display: flex;
+  gap: 10px;
+}
+
+.input-box input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+/* ===== RIGHT PANEL ===== */
+.right {
+  background: var(--card);
+  padding: 20px;
+  border-left: 1px solid var(--border);
+}
+
+/* CARD */
+.card {
+  background: var(--card-soft);
+  padding: 15px;
+  border-radius: 14px;
+  margin-bottom: 15px;
+  border: 1px solid var(--border);
+}
+
+/* ===== RISK COLORS ===== */
+.risk-low {
+  background: #eef7f0;
+  color: var(--accent);
+}
+
+.risk-medium {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.risk-high {
+  background: #fff5f5;
+  color: var(--warn);
+}
+
+/* ===== ALERTS ===== */
+.alert {
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.alert.warn {
+  background: var(--warn-light);
+  color: var(--warn);
+}
+
+.alert.info {
+  background: var(--info-light);
+}
+
+.alert.success {
+  background: var(--accent-light);
+}

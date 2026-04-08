@@ -1,0 +1,10 @@
+{
+  "include": [
+    "*.py"
+  ],
+  "extraPaths": [
+    ".",
+    "C:/Users/Acer/AppData/Local/Programs/Python/Python312/Lib/site-packages",
+    "C:/Users/Acer/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0/LocalCache/local-packages/Python312/site-packages"
+  ]
+}
