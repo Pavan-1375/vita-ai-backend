@@ -227,7 +227,7 @@ def predict(req: SymptomRequest):
     result = predict_disease(model, signals)
     final_result = _apply_safety_overrides(signals, result)
 
-    # POLISH 1: Deduplicate Top Predictions so GERD doesn't show 3 times
+    # POLISH 1: Deduplicate Top Predictions
     top_preds = final_result.get("Top Predictions", [])
     if top_preds:
         seen_diseases = set()
@@ -239,10 +239,49 @@ def predict(req: SymptomRequest):
                 unique_preds.append(p)
         final_result["Top Predictions"] = unique_preds
 
-    # POLISH 2: Capitalize first letter of Precautions and Remedies
-    for key in ["Precautions", "Home Remedies", "Urgent Actions"]:
-        if key in final_result and isinstance(final_result[key], list):
-            final_result[key] = [item.capitalize() for item in final_result[key] if item]
+    # POLISH 2: Capitalize Precautions
+    if "Precautions" in final_result and isinstance(final_result["Precautions"], list):
+        final_result["Precautions"] = [item.capitalize() for item in final_result["Precautions"] if item]
+
+    # AI HOME REMEDIES GENERATOR
+    triage_level = str(final_result.get("Triage", "")).lower()
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    
+    # SAFETY: Never suggest home remedies for high-risk emergencies (like chest pain)
+    if triage_level == "high":
+        final_result["Home Remedies"] = ["No home remedy recommended. Seek immediate medical attention."]
+    elif api_key:
+        try:
+            client = anthropic.Anthropic(api_key=api_key)
+            disease_name = final_result.get("Predicted Disease", "")
+            precautions = final_result.get("Precautions", [])
+            
+            remedy_prompt = f"""Generate exactly 3 simple, safe home remedies for a patient with '{disease_name}'. 
+Do NOT just repeat these precautions: {precautions}. 
+Suggest actual home care (e.g., ginger tea, warm compress, hydration).
+Respond ONLY with a raw JSON array of 3 strings. No markdown, no extra text.
+Example: ["Drink warm ginger tea.", "Apply a warm compress to the affected area.", "Rest in a quiet, dark room."]"""
+            
+            response = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=100,
+                messages=[{"role": "user", "content": remedy_prompt}]
+            )
+            
+            raw_text = response.content[0].text.strip()
+            # Clean up markdown backticks if Claude adds them
+            raw_text = re.sub(r'^```json\s*|\s*```$', '', raw_text, flags=re.MULTILINE).strip()
+            
+            try:
+                ai_remedies = json.loads(raw_text)
+                if isinstance(ai_remedies, list) and len(ai_remedies) > 0:
+                    # Capitalize the first letter of each AI remedy
+                    final_result["Home Remedies"] = [r.capitalize() for r in ai_remedies]
+            except json.JSONDecodeError:
+                pass # If AI fails to format as JSON, it silently falls back to CSV remedies
+                
+        except Exception:
+            pass # If Claude times out or errors, silently fall back to CSV remedies
 
     return final_result
 
