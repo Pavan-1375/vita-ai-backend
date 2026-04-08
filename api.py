@@ -17,7 +17,7 @@ load_dotenv()
 app = FastAPI(
     title="VitalAI Health API",
     description="Symptom checker + AI chat assistant backend",
-    version="1.2.0",
+    version="1.3.0",
 )
 
 app.add_middleware(
@@ -66,6 +66,8 @@ SYMPTOM_ALIASES = {
     "stuffy nose": "congestion",
     "runny nose": "congestion",
     "throwing up": "vomiting",
+    "burning urination": "burning_micturition",
+    "burning urine": "burning_micturition",
 }
 
 
@@ -75,19 +77,13 @@ def _normalize_symptoms(symptoms: List[str]) -> List[str]:
         s = str(raw).strip().lower()
         if not s:
             continue
-        
-        # Fix aliases
         s = SYMPTOM_ALIASES.get(s, s)
-        
-        # CRITICAL: Convert spaces to underscores to match the CSV database
         s = s.replace(" ", "_")
         
-        # If it's an exact match in our database, keep it
         if s in known_symptoms:
             cleaned.append(s)
             continue
             
-        # SMART EXTRACT: If user types "severe one-sided headache", find "headache"
         matched = False
         for known in known_symptoms:
             if known in s or s in known:
@@ -98,7 +94,6 @@ def _normalize_symptoms(symptoms: List[str]) -> List[str]:
         if not matched:
             cleaned.append(s)
 
-    # Keep order, remove duplicates
     seen = set()
     out: List[str] = []
     for s in cleaned:
@@ -117,7 +112,6 @@ def _has_any(signals: List[str], keywords: List[str]) -> bool:
 
 
 def _build_low_signal_fallback(signals: List[str]) -> dict:
-    # Removed "Note" field so UI stays clean
     return {
         "Predicted Disease": "Non-specific Symptom Cluster",
         "Confidence": 52,
@@ -138,7 +132,6 @@ def _build_low_signal_fallback(signals: List[str]) -> dict:
 
 
 def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
-    # Strong emergency override for chest pain/cardiac pattern
     if _has_any(signals, ["heart attack", "heartattack", "cardiac", "angina", "chest_pain", "chest pain"]):
         return {
             "Predicted Disease": "Possible cardiac emergency pattern",
@@ -155,7 +148,6 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
             "Top Predictions": result.get("Top Predictions", []),
         }
 
-    # Nosebleed-specific override
     if _has_any(signals, ["nosebleed", "bloody nose", "bleeding nose", "nose_bleeding"]):
         confidence = float(result.get("Confidence", 0) or 0)
         if confidence < 45:
@@ -181,16 +173,12 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
                 "Top Predictions": result.get("Top Predictions", []),
             }
 
-    # Get final confidence and disease
     confidence = float(result.get("Confidence", 0) or 0)
     disease = str(result.get("Predicted Disease", "")).strip().lower()
     
-    # If no disease was found at all, use fallback
     if not disease or disease == "unknown":
         return _build_low_signal_fallback(signals)
 
-    # If confidence is low BUT we found a real disease, keep the real disease 
-    # and its precautions! Just force Triage to "low" for safety.
     if confidence < 35:
         result["Confidence"] = max(confidence, 30)
         result["Triage"] = "low"
@@ -199,6 +187,7 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
 
     result["Input Symptoms"] = signals
     return result
+
 
 @app.get("/")
 def root():
@@ -210,7 +199,6 @@ def root():
 
 @app.get("/symptoms")
 def get_symptoms():
-    # Convert underscores to spaces so the React UI looks clean to the user
     clean_symptoms = [s.replace("_", " ").strip() for s in known_symptoms]
     return {"symptoms": clean_symptoms}
 
@@ -228,7 +216,6 @@ def predict(req: SymptomRequest):
         result = predict_disease(model, signals)
         final_result = _apply_safety_overrides(signals, result)
 
-        # POLISH 1: Deduplicate Top Predictions
         top_preds = final_result.get("Top Predictions", [])
         if top_preds:
             seen_diseases = set()
@@ -240,30 +227,43 @@ def predict(req: SymptomRequest):
                     unique_preds.append(p)
             final_result["Top Predictions"] = unique_preds
 
-        # POLISH 2: Capitalize Precautions
         if "Precautions" in final_result and isinstance(final_result["Precautions"], list):
             final_result["Precautions"] = [item.capitalize() for item in final_result["Precautions"] if item]
 
         # AI HOME REMEDIES GENERATOR
         triage_level = str(final_result.get("Triage", "")).lower()
         api_key = os.environ.get("ANTHROPIC_API_KEY")
+        disease_name = str(final_result.get("Predicted Disease", "")).lower()
         
-        # SAFETY: Never suggest home remedies for high-risk emergencies (like chest pain)
         if triage_level == "high":
             final_result["Home Remedies"] = ["No home remedy recommended. Seek immediate medical attention."]
+        
+        elif "gerd" in disease_name or "acidity" in disease_name:
+            final_result["Home Remedies"] = ["Drink cold milk to soothe the stomach lining.", "Chew sugar-free gum to reduce acid reflux.", "Sip ginger tea to ease digestion."]
+        elif "migraine" in disease_name or "headache" in disease_name:
+            final_result["Home Remedies"] = ["Apply a cold compress to your forehead.", "Rest in a dark, quiet room.", "Drink plenty of water to stay hydrated."]
+        elif "common cold" in disease_name or "congestion" in disease_name:
+            final_result["Home Remedies"] = ["Gargle with warm salt water.", "Drink hot honey and lemon tea.", "Use a humidifier or steam inhalation."]
+        elif "fever" in disease_name or "malaria" in disease_name or "typhoid" in disease_name:
+            final_result["Home Remedies"] = ["Apply a lukewarm sponge bath.", "Drink plenty of electrolytes or ORS.", "Rest under a light blanket."]
+        elif "cough" in disease_name:
+            final_result["Home Remedies"] = ["Drink warm turmeric milk.", "Sip on hot ginger tea with honey.", "Use a steam vaporizer to clear airways."]
+        elif "skin_rash" in disease_name or "fungal" in disease_name or "acne" in disease_name:
+            final_result["Home Remedies"] = ["Apply a cool, damp cloth to the affected area.", "Use an unscented moisturizer.", "Avoid scratching the area."]
+        elif "vomiting" in disease_name or "gastroenteritis" in disease_name:
+            final_result["Home Remedies"] = ["Take small sips of water or ice chips.", "Stick to bland foods like crackers or toast.", "Rest and avoid solid foods until vomiting stops."]
+            
         elif api_key:
             try:
                 import json
                 import re
                 client = anthropic.Anthropic(api_key=api_key)
-                disease_name = final_result.get("Predicted Disease", "")
                 precautions = final_result.get("Precautions", [])
                 
                 remedy_prompt = f"""Generate exactly 3 simple, safe home remedies for a patient with '{disease_name}'. 
 Do NOT just repeat these precautions: {precautions}. 
 Suggest actual home care (e.g., ginger tea, warm compress, hydration).
-Respond ONLY with a raw JSON array of 3 strings. No markdown, no extra text.
-Example: ["Drink warm ginger tea.", "Apply a warm compress to the affected area.", "Rest in a quiet, dark room."]"""
+Respond ONLY with a raw JSON array of 3 strings. No markdown, no extra text."""
                 
                 response = client.messages.create(
                     model="claude-sonnet-4-20250514",
@@ -274,20 +274,18 @@ Example: ["Drink warm ginger tea.", "Apply a warm compress to the affected area.
                 if response.content and len(response.content) > 0:
                     raw_text = response.content[0].text.strip()
                     raw_text = re.sub(r'^```json\s*|\s*```$', '', raw_text, flags=re.MULTILINE).strip()
-                    
                     try:
                         ai_remedies = json.loads(raw_text)
                         if isinstance(ai_remedies, list) and len(ai_remedies) > 0:
                             final_result["Home Remedies"] = [r.capitalize() for r in ai_remedies]
                     except json.JSONDecodeError:
-                        pass # Falls back to CSV remedies
+                        pass 
             except Exception:
-                pass # If Claude fails completely, falls back to CSV remedies
+                pass 
 
         return final_result
 
     except Exception as e:
-        # Absolute last-resort safety net so the app NEVER crashes
         return {
             "Predicted Disease": "Processing Error",
             "Confidence": 0,
@@ -327,7 +325,6 @@ def claude_direct(req: ClaudeRequest):
     try:
         client = anthropic.Anthropic(api_key=api_key)
         
-        # UPGRADED PROMPT: Forces Claude to explain precautions clearly like a real doctor
         enhanced_prompt = req.system_prompt + """
 
 STRICT INSTRUCTIONS FOR PRECAUTIONS & REMEDIES:
@@ -339,7 +336,7 @@ STRICT INSTRUCTIONS FOR PRECAUTIONS & REMEDIES:
         
         response = client.messages.create(
             model="claude-sonnet-4-20250514",
-            max_tokens=300, # Kept short so replies are fast and punchy
+            max_tokens=300,
             system=enhanced_prompt,
             messages=req.messages,
         )
