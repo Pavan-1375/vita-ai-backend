@@ -225,7 +225,26 @@ def predict(req: SymptomRequest):
         raise HTTPException(status_code=400, detail="Provide at least one symptom.")
 
     result = predict_disease(model, signals)
-    return _apply_safety_overrides(signals, result)
+    final_result = _apply_safety_overrides(signals, result)
+
+    # POLISH 1: Deduplicate Top Predictions so GERD doesn't show 3 times
+    top_preds = final_result.get("Top Predictions", [])
+    if top_preds:
+        seen_diseases = set()
+        unique_preds = []
+        for p in top_preds:
+            disease_name = p.get("Disease", "")
+            if disease_name not in seen_diseases:
+                seen_diseases.add(disease_name)
+                unique_preds.append(p)
+        final_result["Top Predictions"] = unique_preds
+
+    # POLISH 2: Capitalize first letter of Precautions and Remedies
+    for key in ["Precautions", "Home Remedies", "Urgent Actions"]:
+        if key in final_result and isinstance(final_result[key], list):
+            final_result[key] = [item.capitalize() for item in final_result[key] if item]
+
+    return final_result
 
 
 @app.post("/chat")
