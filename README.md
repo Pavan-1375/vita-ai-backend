@@ -1,27 +1,28 @@
-# YouOkay — AI-Powered Symptom Checker & Wellness Guide
+# YouOkay — Backend
 
-**Instant symptom analysis with safe triage and contextual AI guidance.**
+Core engine for symptom prediction, triage, and safety checks.
 
-### Live Demo
-→ [https://vita-ai-puce.vercel.app](https://vita-ai-puce.vercel.app)
+### Features
+- Matches user symptoms against 400+ conditions using CSV data
+- Weighted symptom scoring + top-3 results
+- Triage classification (LOW / MEDIUM / HIGH)
+- Red-flag emergency detection
+- Contextual chat assistant
+- Precaution & remedy lookup
+- Voice-ready components
 
-### Key Features
-- Symptom input → Top-3 disease predictions with confidence
-- Urgency triage: Low / Medium / High
-- Two-layer safety system (red flags + emergency warnings)
-- Voice input & voice output support
-- Contextual AI chat for follow-up questions
-- Safety precautions and home remedies
-- Wellness tracker (hydration, breathing, mood)
+### Main Files
+- `symptom_core.py` — Core prediction logic
+- `app.py` — Streamlit UI
+- `chat_assistant.py` — AI chat
+- `api.py` / `server.py` — API endpoints
 
-### Tech Stack (Frontend)
-- React + TypeScript + Vite
-- Tailwind CSS + Framer Motion
-- Deployed on Vercel
+### Tech Stack
+- Python 3, Pandas, Streamlit
+- gTTS + SpeechRecognition for voice
+- CSV knowledge base (`DiseaseAndSymptoms.csv`)
 
-### Backend
-Connected to: https://github.com/Pavan-1375/vita-ai-backend (Python + Streamlit core + API endpoints)
-
-**Disclaimer**: This is an educational prototype and **not a substitute for professional medical advice**. Always consult a doctor.
-
-Made with ❤️ for better health decisions in India.
+### How to Run Locally
+```bash
+pip install -r requirements.txt
+streamlit run app.py
