@@ -181,7 +181,8 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
                 "Top Predictions": result.get("Top Predictions", []),
             }
 
-        confidence = float(result.get("Confidence", 0) or 0)
+    # Get final confidence and disease
+    confidence = float(result.get("Confidence", 0) or 0)
     disease = str(result.get("Predicted Disease", "")).strip().lower()
     
     # If no disease was found at all, use fallback
@@ -191,14 +192,13 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
     # If confidence is low BUT we found a real disease, keep the real disease 
     # and its precautions! Just force Triage to "low" for safety.
     if confidence < 35:
-        result["Confidence"] = max(confidence, 30) # Clean up the number slightly
+        result["Confidence"] = max(confidence, 30)
         result["Triage"] = "low"
         result["Input Symptoms"] = signals
         return result
 
     result["Input Symptoms"] = signals
     return result
-
 
 @app.get("/")
 def root():
