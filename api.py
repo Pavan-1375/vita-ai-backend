@@ -186,18 +186,46 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
     severe_keywords = ["paralysis", "aids", "heart attack", "tuberculosis", "hepatitis", "dengue", "malaria", "pneumonia", "typhoid"]
     is_severe_disease = any(sev in disease for sev in severe_keywords)
     
-    if confidence < 40 and is_severe_disease:
-        return _build_low_signal_fallback(signals)
-
-    # If confidence is low BUT it's a safe disease (like GERD), keep it!
-    if confidence < 35:
-        result["Confidence"] = max(confidence, 30)
-        result["Triage"] = "low"
-        result["Input Symptoms"] = signals
-        return result
-
-    result["Input Symptoms"] = signals
-    return result
+        if confidence < 40 and is_severe_disease:
+        # SMART FALLBACK: If user types 1 common symptom, give a real answer, not "Non-specific"
+        single_symptom = signals[0] if len(signals) == 1 else ""
+        
+        if "headache" in single_symptom:
+            return {
+                "Predicted Disease": "Tension Headache or Migraine",
+                "Confidence": 45,
+                "Triage": "low",
+                "Precautions": ["Rest in a dark, quiet room", "Stay hydrated", "Limit screen time", "Monitor for 24 hours"],
+                "Home Remedies": ["Apply a cold compress to your forehead.", "Drink plenty of water.", "Take a short nap."],
+                "Urgent Actions": [],
+                "Input Symptoms": signals,
+                "Top Predictions": result.get("Top Predictions", [])
+            }
+        elif "fever" in single_symptom:
+            return {
+                "Predicted Disease": "Viral Fever",
+                "Confidence": 45,
+                "Triage": "medium",
+                "Precautions": ["Monitor temperature regularly", "Stay hydrated", "Rest", "Consult doctor if it persists beyond 3 days"],
+                "Home Remedies": ["Apply a lukewarm sponge bath.", "Drink plenty of electrolytes or ORS.", "Rest under a light blanket."],
+                "Urgent Actions": ["Seek immediate care if temperature crosses 103°F (39.4°C)."],
+                "Input Symptoms": signals,
+                "Top Predictions": result.get("Top Predictions", [])
+            }
+        elif "cough" in single_symptom:
+            return {
+                "Predicted Disease": "Upper Respiratory Infection",
+                "Confidence": 45,
+                "Triage": "low",
+                "Precautions": ["Stay hydrated", "Avoid cold or dusty environments", "Monitor for 48 hours"],
+                "Home Remedies": ["Drink warm turmeric milk.", "Sip on hot ginger tea with honey.", "Use a steam vaporizer to clear airways."],
+                "Urgent Actions": [],
+                "Input Symptoms": signals,
+                "Top Predictions": result.get("Top Predictions", [])
+            }
+        else:
+            # Only show "Non-specific" for weird inputs, not common words
+            return _build_low_signal_fallback(signals)
 
 def _get_safe_dataset_override(signals: List[str]) -> dict | None:
     """Forces generic standalone symptoms to match a safe disease with exact CSV precautions."""
