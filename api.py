@@ -275,13 +275,19 @@ def predict(req: SymptomRequest):
     if not model:
         raise HTTPException(status_code=503, detail="Symptom model not loaded.")
 
-    signals = _normalize_symptoms(req.symptoms)
+        signals = _normalize_symptoms(req.symptoms)
     if not signals:
         raise HTTPException(status_code=400, detail="Provide at least one symptom.")
 
     try:
-        result = predict_disease(model, signals)
-        final_result = _apply_safety_overrides(signals, result)
+        # OVERRIDE: If user types a single generic symptom (like 'headache'), 
+        # use the exact dataset match instead of letting the math guess.
+        safe_override = _get_safe_dataset_override(signals)
+        if safe_override:
+            final_result = safe_override
+        else:
+            result = predict_disease(model, signals)
+            final_result = _apply_safety_overrides(signals, result)
 
         top_preds = final_result.get("Top Predictions", [])
         if top_preds:
