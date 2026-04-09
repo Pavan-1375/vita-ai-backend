@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import List
+from typing import List, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -17,7 +17,7 @@ load_dotenv()
 app = FastAPI(
     title="VitalAI Health API",
     description="Symptom checker + AI chat assistant backend",
-    version="1.3.0",
+    version="1.4.0",
 )
 
 app.add_middleware(
@@ -193,10 +193,11 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
     result["Input Symptoms"] = signals
     return result
 
-def _get_safe_dataset_override(signals: List[str]) -> dict | None:
+
+def _get_safe_dataset_override(signals: List[str]) -> Optional[dict]:
     """Forces generic standalone symptoms to match a safe disease with exact CSV precautions."""
     if len(signals) != 1:
-        return None # Only triggers if user types exactly ONE symptom
+        return None
     
     symptom = signals[0].lower()
 
@@ -269,13 +270,12 @@ def predict(req: SymptomRequest):
     if not model:
         raise HTTPException(status_code=503, detail="Symptom model not loaded.")
 
-        signals = _normalize_symptoms(req.symptoms)
+    signals = _normalize_symptoms(req.symptoms)
     if not signals:
         raise HTTPException(status_code=400, detail="Provide at least one symptom.")
 
     try:
-        # OVERRIDE: If user types a single generic symptom (like 'headache'), 
-        # use the exact dataset match instead of letting the math guess.
+        # OVERRIDE: If user types a single generic symptom, use the exact dataset match.
         safe_override = _get_safe_dataset_override(signals)
         if safe_override:
             final_result = safe_override
