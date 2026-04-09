@@ -249,6 +249,18 @@ def _get_safe_dataset_override(signals: List[str]) -> Optional[dict]:
             "Top Predictions": [{"Disease": "Fungal infection", "Match Score": 1, "Weighted Score": 4.5, "Coverage": 20.0, "Matched Symptoms": [symptom]}]
         }
 
+    elif symptom in ["sore_throat", "throat_pain", "stiff_neck"]:
+        return {
+            "Predicted Disease": "Common Cold",
+            "Confidence": 45,
+            "Triage": "low",
+            "Precautions": ["Drink vitamin C rich drinks", "Take vapour", "Avoid cold food", "Keep fever in check"],
+            "Home Remedies": ["Gargle with warm salt water.", "Drink hot honey and lemon tea.", "Use a humidifier or steam inhalation."],
+            "Urgent Actions": [],
+            "Red Flags": [],
+            "Top Predictions": [{"Disease": "Common Cold", "Match Score": 1, "Weighted Score": 4.5, "Coverage": 20.0, "Matched Symptoms": [symptom]}]
+        }
+
     return None
     
 @app.get("/")
