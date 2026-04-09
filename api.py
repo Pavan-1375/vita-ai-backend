@@ -199,7 +199,63 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
     result["Input Symptoms"] = signals
     return result
 
+def _get_safe_dataset_override(signals: List[str]) -> dict | None:
+    """Forces generic standalone symptoms to match a safe disease with exact CSV precautions."""
+    if len(signals) != 1:
+        return None # Only triggers if user types exactly ONE symptom
+    
+    symptom = signals[0].lower()
 
+    if symptom == "headache":
+        return {
+            "Predicted Disease": "Migraine",
+            "Confidence": 45,
+            "Triage": "low",
+            "Precautions": ["Meditation", "Reduce stress", "Use polaroid glasses in sun", "Consult doctor"],
+            "Home Remedies": ["Apply a cold compress to your forehead.", "Rest in a dark, quiet room.", "Drink plenty of water to stay hydrated."],
+            "Urgent Actions": [],
+            "Red Flags": [],
+            "Top Predictions": [{"Disease": "Migraine", "Match Score": 1, "Weighted Score": 4.5, "Coverage": 20.0, "Matched Symptoms": ["headache"]}]
+        }
+    
+    elif symptom == "cough":
+        return {
+            "Predicted Disease": "Common Cold",
+            "Confidence": 45,
+            "Triage": "low",
+            "Precautions": ["Drink vitamin C rich drinks", "Take vapour", "Avoid cold food", "Keep fever in check"],
+            "Home Remedies": ["Gargle with warm salt water.", "Drink hot honey and lemon tea.", "Use a humidifier or steam inhalation."],
+            "Urgent Actions": [],
+            "Red Flags": [],
+            "Top Predictions": [{"Disease": "Common Cold", "Match Score": 1, "Weighted Score": 4.5, "Coverage": 20.0, "Matched Symptoms": ["cough"]}]
+        }
+        
+    elif symptom == "vomiting":
+        return {
+            "Predicted Disease": "Gastroenteritis",
+            "Confidence": 45,
+            "Triage": "medium",
+            "Precautions": ["Stop eating solid food for a while", "Try taking small sips of water", "Rest", "Ease back into eating"],
+            "Home Remedies": ["Take small sips of water or ice chips.", "Stick to bland foods like crackers or toast.", "Rest and avoid solid foods until vomiting stops."],
+            "Urgent Actions": [],
+            "Red Flags": [],
+            "Top Predictions": [{"Disease": "Gastroenteritis", "Match Score": 1, "Weighted Score": 4.5, "Coverage": 20.0, "Matched Symptoms": ["vomiting"]}]
+        }
+        
+    elif symptom in ["skin_rash", "itching"]:
+        return {
+            "Predicted Disease": "Fungal infection",
+            "Confidence": 45,
+            "Triage": "low",
+            "Precautions": ["Bath twice", "Use detol or neem in bathing water", "Keep infected area dry", "Use clean cloths"],
+            "Home Remedies": ["Apply a cool, damp cloth to the affected area.", "Use an unscented moisturizer.", "Avoid scratching the area."],
+            "Urgent Actions": [],
+            "Red Flags": [],
+            "Top Predictions": [{"Disease": "Fungal infection", "Match Score": 1, "Weighted Score": 4.5, "Coverage": 20.0, "Matched Symptoms": [symptom]}]
+        }
+
+    return None
+    
 @app.get("/")
 def root():
     return {
