@@ -132,22 +132,20 @@ def _build_low_signal_fallback(signals: List[str]) -> dict:
 
 
 def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
+    # 1. Emergency override for chest pain
     if _has_any(signals, ["heart attack", "heartattack", "cardiac", "angina", "chest_pain", "chest pain"]):
         return {
             "Predicted Disease": "Possible cardiac emergency pattern",
             "Confidence": 92,
             "Triage": "high",
-            "Precautions": [
-                "Call emergency services immediately",
-                "Stop activity and sit or lie down safely",
-                "Do not delay in-person emergency care",
-            ],
+            "Precautions": ["Call emergency services immediately", "Stop activity and sit or lie down safely", "Do not delay in-person emergency care"],
             "Home Remedies": ["No home remedy for suspected heart emergency."],
             "Urgent Actions": ["Go to ER now."],
             "Input Symptoms": signals,
-            "Top Predictions": result.get("Top Predictions", []),
+            "Top Predictions": result.get("Top Predictions", [])
         }
 
+    # 2. Nosebleed override
     if _has_any(signals, ["nosebleed", "bloody nose", "bleeding nose", "nose_bleeding"]):
         confidence = float(result.get("Confidence", 0) or 0)
         if confidence < 45:
@@ -155,77 +153,45 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
                 "Predicted Disease": "Likely Epistaxis (Nosebleed Pattern)",
                 "Confidence": 76,
                 "Triage": "medium",
-                "Precautions": [
-                    "Sit upright and lean slightly forward",
-                    "Pinch soft part of nose for 10-15 minutes continuously",
-                    "Apply cold compress over nose bridge",
-                    "Do not tilt head back",
-                ],
-                "Home Remedies": [
-                    "Hydrate and keep room air humidified",
-                    "Use saline gel for dry nostrils",
-                ],
-                "Urgent Actions": [
-                    "Seek urgent care if bleeding lasts more than 20 minutes",
-                    "Seek urgent care if dizziness, fainting, or heavy bleeding occurs",
-                ],
+                "Precautions": ["Sit upright and lean slightly forward", "Pinch soft part of nose for 10-15 minutes continuously", "Apply cold compress over nose bridge", "Do not tilt head back"],
+                "Home Remedies": ["Hydrate and keep room air humidified", "Use saline gel for dry nostrils"],
+                "Urgent Actions": ["Seek urgent care if bleeding lasts more than 20 minutes", "Seek urgent care if dizziness, fainting, or heavy bleeding occurs"],
                 "Input Symptoms": signals,
-                "Top Predictions": result.get("Top Predictions", []),
+                "Top Predictions": result.get("Top Predictions", [])
             }
 
-       # Get final confidence and disease
+    # 3. Get final confidence and disease
     confidence = float(result.get("Confidence", 0) or 0)
     disease = str(result.get("Predicted Disease", "")).strip().lower()
     
-    # If no disease was found at all, use fallback
     if not disease or disease == "unknown":
         return _build_low_signal_fallback(signals)
 
-    # CRITICAL SAFETY CHECK: Never show severe diseases (Paralysis, AIDS, etc.) 
-    # if confidence is low. A user typing "headache" should NEVER see "Paralysis".
+    # 4. Severe disease sanity check
     severe_keywords = ["paralysis", "aids", "heart attack", "tuberculosis", "hepatitis", "dengue", "malaria", "pneumonia", "typhoid"]
-    is_severe_disease = any(sev in disease for sev in severe_keywords)
+    is_severe = any(sev in disease for sev in severe_keywords)
     
-        if confidence < 40 and is_severe_disease:
-        # SMART FALLBACK: If user types 1 common symptom, give a real answer, not "Non-specific"
+    if confidence < 40 and is_severe:
+        # Smart fallback for common single symptoms
         single_symptom = signals[0] if len(signals) == 1 else ""
-        
         if "headache" in single_symptom:
-            return {
-                "Predicted Disease": "Tension Headache or Migraine",
-                "Confidence": 45,
-                "Triage": "low",
-                "Precautions": ["Rest in a dark, quiet room", "Stay hydrated", "Limit screen time", "Monitor for 24 hours"],
-                "Home Remedies": ["Apply a cold compress to your forehead.", "Drink plenty of water.", "Take a short nap."],
-                "Urgent Actions": [],
-                "Input Symptoms": signals,
-                "Top Predictions": result.get("Top Predictions", [])
-            }
+            return {"Predicted Disease": "Tension Headache or Migraine", "Confidence": 45, "Triage": "low", "Precautions": ["Rest in a dark, quiet room", "Stay hydrated", "Limit screen time", "Monitor for 24 hours"], "Home Remedies": ["Apply a cold compress to your forehead.", "Drink plenty of water.", "Take a short nap."], "Urgent Actions": [], "Input Symptoms": signals}
         elif "fever" in single_symptom:
-            return {
-                "Predicted Disease": "Viral Fever",
-                "Confidence": 45,
-                "Triage": "medium",
-                "Precautions": ["Monitor temperature regularly", "Stay hydrated", "Rest", "Consult doctor if it persists beyond 3 days"],
-                "Home Remedies": ["Apply a lukewarm sponge bath.", "Drink plenty of electrolytes or ORS.", "Rest under a light blanket."],
-                "Urgent Actions": ["Seek immediate care if temperature crosses 103°F (39.4°C)."],
-                "Input Symptoms": signals,
-                "Top Predictions": result.get("Top Predictions", [])
-            }
+            return {"Predicted Disease": "Viral Fever", "Confidence": 45, "Triage": "medium", "Precautions": ["Monitor temperature regularly", "Stay hydrated", "Rest", "Consult doctor if it persists beyond 3 days"], "Home Remedies": ["Apply a lukewarm sponge bath.", "Drink plenty of electrolytes or ORS.", "Rest under a light blanket."], "Urgent Actions": ["Seek immediate care if temperature crosses 103°F (39.4°C)."], "Input Symptoms": signals}
         elif "cough" in single_symptom:
-            return {
-                "Predicted Disease": "Upper Respiratory Infection",
-                "Confidence": 45,
-                "Triage": "low",
-                "Precautions": ["Stay hydrated", "Avoid cold or dusty environments", "Monitor for 48 hours"],
-                "Home Remedies": ["Drink warm turmeric milk.", "Sip on hot ginger tea with honey.", "Use a steam vaporizer to clear airways."],
-                "Urgent Actions": [],
-                "Input Symptoms": signals,
-                "Top Predictions": result.get("Top Predictions", [])
-            }
+            return {"Predicted Disease": "Upper Respiratory Infection", "Confidence": 45, "Triage": "low", "Precautions": ["Stay hydrated", "Avoid cold or dusty environments", "Monitor for 48 hours"], "Home Remedies": ["Drink warm turmeric milk.", "Sip on hot ginger tea with honey.", "Use a steam vaporizer to clear airways."], "Urgent Actions": [], "Input Symptoms": signals}
         else:
-            # Only show "Non-specific" for weird inputs, not common words
             return _build_low_signal_fallback(signals)
+
+    # 5. Safe disease with low confidence (like GERD)
+    if confidence < 35:
+        result["Confidence"] = max(confidence, 30)
+        result["Triage"] = "low"
+        result["Input Symptoms"] = signals
+        return result
+
+    result["Input Symptoms"] = signals
+    return result
 
 def _get_safe_dataset_override(signals: List[str]) -> dict | None:
     """Forces generic standalone symptoms to match a safe disease with exact CSV precautions."""
