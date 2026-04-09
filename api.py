@@ -173,12 +173,23 @@ def _apply_safety_overrides(signals: List[str], result: dict) -> dict:
                 "Top Predictions": result.get("Top Predictions", []),
             }
 
+       # Get final confidence and disease
     confidence = float(result.get("Confidence", 0) or 0)
     disease = str(result.get("Predicted Disease", "")).strip().lower()
     
+    # If no disease was found at all, use fallback
     if not disease or disease == "unknown":
         return _build_low_signal_fallback(signals)
 
+    # CRITICAL SAFETY CHECK: Never show severe diseases (Paralysis, AIDS, etc.) 
+    # if confidence is low. A user typing "headache" should NEVER see "Paralysis".
+    severe_keywords = ["paralysis", "aids", "heart attack", "tuberculosis", "hepatitis", "dengue", "malaria", "pneumonia", "typhoid"]
+    is_severe_disease = any(sev in disease for sev in severe_keywords)
+    
+    if confidence < 40 and is_severe_disease:
+        return _build_low_signal_fallback(signals)
+
+    # If confidence is low BUT it's a safe disease (like GERD), keep it!
     if confidence < 35:
         result["Confidence"] = max(confidence, 30)
         result["Triage"] = "low"
